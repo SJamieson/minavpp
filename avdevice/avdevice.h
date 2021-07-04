@@ -27,12 +27,12 @@ T* device_get_by_name(T* (*func_next)(T*), const char* name)
 
 } // namespace detail
 
-AVInputFormat* input_video_device_get_by_name(const char* name)
+const AVInputFormat* input_video_device_get_by_name(const char* name)
 {
 	return detail::device_get_by_name(av_input_video_device_next, name);
 }
 
-AVOutputFormat* output_video_device_get_by_name(const char* name)
+const AVOutputFormat* output_video_device_get_by_name(const char* name)
 {
 	return detail::device_get_by_name(av_output_video_device_next, name);
 }
