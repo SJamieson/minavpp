@@ -1,7 +1,7 @@
 #pragma once
 
 extern "C" {
-#include <libavcodec/codec.h>
+#include <libavcodec/avcodec.h>
 }
 
 #include <memory>

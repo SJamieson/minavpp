@@ -20,7 +20,7 @@ struct AVDictionaryDeleter {
 
 using AVDictionaryPtr = std::unique_ptr<AVDictionary, AVDictionaryDeleter>;
 
-AVDictionaryPtr dict_parse_string(const std::string& options, const std::string& key_val_sep, const std::string& pairs_sep)
+AVDictionaryPtr dict_parse_string(const std::string& options, const std::string& key_val_sep = "=", const std::string& pairs_sep = ",")
 {
 	AVPP_TRACE_ENTER;
 	AVDictionary* dict{};

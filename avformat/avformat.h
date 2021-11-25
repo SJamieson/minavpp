@@ -20,7 +20,7 @@ struct AVFormatContextDeleter {
 
 using AVFormatContextPtr = std::unique_ptr<AVFormatContext, AVFormatContextDeleter>;
 
-AVFormatContextPtr open_input(std::string url, std::string format_name) {
+AVFormatContextPtr open_input(const std::string& url, const std::string& format_name, AVDictionary* options = nullptr) {
 	AVPP_TRACE_ENTER;
 	AVFormatContext* context{ nullptr };
 	auto input_format{ av_find_input_format(format_name.c_str()) };
@@ -28,7 +28,9 @@ AVFormatContextPtr open_input(std::string url, std::string format_name) {
 		Log::error("failed to find input format {}", format_name);
 		return nullptr;
 	}
-	auto ret{ avformat_open_input(&context, url.c_str(), input_format, nullptr) };
+    AVDictionary* optionsCopy = nullptr;
+    if (options != nullptr) av_dict_copy(&optionsCopy, options, 0);
+	auto ret{ avformat_open_input(&context, url.c_str(), input_format, &optionsCopy) };
 	if (ret < 0) {
 		Log::error("failed to allocate output context for {}: {}", url, make_error_string(ret));
 	}
@@ -43,6 +45,10 @@ AVFormatContextPtr open_input(std::string url, std::string format_name) {
 			context = nullptr;
 		}
 	}
+    auto const unset_options = av_dict_count(optionsCopy);
+    if (unset_options > 0) {
+        Log::error("failed to set {} options", unset_options);
+    }
 	AVPP_TRACE_RETURN(AVFormatContextPtr{ context });
 }
 
